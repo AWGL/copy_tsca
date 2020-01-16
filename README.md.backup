@@ -76,13 +76,18 @@ A log file ```tsca_copy.log``` is generated at each execution of the software to
 ***
 ## Notes
 ### Current known issues
-* None
+* The test suite is incomplete
 
 ### Dependency List
 In case the Conda environment build fails.
 
 * python 3.7
 * tkinter
+* xlrd
+* openpyxl
+* pandas
+* reportlab
+* lxml
 
 
 
