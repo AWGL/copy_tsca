@@ -1,0 +1,16 @@
+#Illumina Variables File
+
+#Demographics
+sampleId=NTC
+
+#Run Details
+seqId=191220_NB551415_0052_AHVVJVAFXY
+platform=ILLUMINA
+worklistId="20-0000"
+
+#Sample Descriptors
+pipelineName=GermlineEnrichment
+pipelineVersion=2.5.3
+panel=IlluminaTruSightCancer
+sex=2
+order=5
