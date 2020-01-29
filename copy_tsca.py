@@ -165,14 +165,7 @@ def main():
         error_conditions(root, err)
         sys.exit(1)
 
-    # Obtain current year
-    yr = datetime.now().year
-
-    # Check existence of results directory on L: and if not there, create it
-    if not os.path.exists(os.path.join(results_directory_l_drive, f"{yr} Runs")):
-        os.makedirs(os.path.join(results_directory_l_drive, f"{yr} Runs"))
-
-    # Obtain worksheet id
+    # Obtain worksheet id and use to create results directory
     # Load variables files
     try:
         all_variables = parse_variables(root, run_id)
@@ -196,6 +189,15 @@ def main():
 
     # Remove " from worksheet id for downstream use
     worksheet_id = worksheet_ids[0].split('"')[1]
+
+    # Obtain worksheet year
+    century = str(datetime.now().year)[0:2]
+    decade = worksheet_id.split('-')[0]
+    yr = f"{century}{decade}"
+
+    # Check existence of results directory on L: and if not there, create it
+    if not os.path.exists(os.path.join(results_directory_l_drive, f"{yr} Runs")):
+        os.makedirs(os.path.join(results_directory_l_drive, f"{yr} Runs"))
 
     # Make directory named after worksheet on L:
     if not os.path.exists(os.path.join(results_directory_l_drive, f"{yr} Runs", worksheet_id)):
