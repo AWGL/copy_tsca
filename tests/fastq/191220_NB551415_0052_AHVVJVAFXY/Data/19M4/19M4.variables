@@ -6,7 +6,7 @@ sampleId=19M4
 #Run Details
 seqId=191220_NB551415_0052_AHVVJVAFXY
 platform=ILLUMINA
-worklistId="20-0000"
+worklistId="19-0000"
 
 #Sample Descriptors
 pipelineName=GermlineEnrichment
