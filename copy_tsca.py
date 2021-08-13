@@ -40,7 +40,7 @@ def parse_variables(root, run_id):
                     except IndexError:
                         pass
         except FileNotFoundError:
-            bad_directory = os.path.join(archive_directory_base, "fastq", run_id, "Data")
+            bad_directory = os.path.join(results_directory_cluster, "fastq", run_id, "Data")
             err = f"Variables file could not be found on U: drive for sample {s} in " \
                   f"{bad_directory}. Please check to see if it is there."
             logging.exception(err)
@@ -222,7 +222,7 @@ def main():
                          os.path.join(results_directory_l_drive, f"{yr} Runs", worksheet_id))
         except:
             err = f"CNV results file {run_id}_{c} could not be copied from " \
-                  f"{os.path.join(results_directory_cluster, run_id, 'IlluminaTruSightCancer', 'post_processing', 'resuts', 'cnv_svs')}. " \
+                  f"{os.path.join(results_directory_cluster, run_id, 'IlluminaTruSightCancer', 'post_processing', 'results', 'cnv_svs')}. " \
                   f"Please check to see if it is there."
             logging.exception(err)
             error_conditions(root, err)
