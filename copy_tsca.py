@@ -28,13 +28,11 @@ def error_conditions(root, e):
 
 def parse_variables(root, run_id):
     variables = {}
-    # Return to base of archive directory
-    archive_directory_base = os.path.normpath(archive_directory_cluster + os.sep + os.pardir)
     # Load variables files for all samples on the run- original location on archive directory
-    for s in next(os.walk(os.path.join(archive_directory_base, "fastq", run_id, "Data")))[1]:
+    for s in next(os.walk(os.path.join(results_directory_cluster, "fastq", run_id, "Data")))[1]:
         current_variables = {}
         try:
-            with open(os.path.join(archive_directory_base, "fastq", run_id, "Data", s, f"{s}.variables")) as vf:
+            with open(os.path.join(results_directory_cluster, "fastq", run_id, "Data", s, f"{s}.variables")) as vf:
                 for line in vf:
                     split_line = line.rstrip().split("=")
                     try:
@@ -43,7 +41,7 @@ def parse_variables(root, run_id):
                         pass
         except FileNotFoundError:
             bad_directory = os.path.join(archive_directory_base, "fastq", run_id, "Data")
-            err = f"Variables file could not be found on A: drive for sample {s} in " \
+            err = f"Variables file could not be found on U: drive for sample {s} in " \
                   f"{bad_directory}. Please check to see if it is there."
             logging.exception(err)
             error_conditions(root, err)
@@ -59,7 +57,7 @@ def copy_sample(root, source_directory, target_directory, run_id, s):
             try:
                 shutil.copy2(os.path.join(source_directory, f"{run_id}_{s}_{f}"), target_directory)
             except:
-                err = f"Problem with copying file {run_id}_{s}_{f} for sample {s}. Check that it is present on W:."
+                err = f"Problem with copying file {run_id}_{s}_{f} for sample {s}. Check that it is present on U:."
                 logging.exception(Exception(err))
                 error_conditions(root, err)
                 sys.exit(1)
@@ -75,7 +73,7 @@ def copy_sample(root, source_directory, target_directory, run_id, s):
                                  os.path.join(target_directory, d))
                 except:
                     err = f"Problem with copying file {f} from directory {d} for sample {s}. " \
-                          f"Check that it is present on W:."
+                          f"Check that it is present on U:."
                     logging.exception(Exception(err))
                     error_conditions(root, err)
                     sys.exit(1)
@@ -104,7 +102,7 @@ def copy_ntc(root, archive_directory, target_directory):
                                  os.path.join(target_directory, d))
                 except:
                     err = f"Problem with copying file {f} from directory {d} for NTC. " \
-                          f"Check that it is present on A:."
+                          f"Check that it is present on T:."
                     logging.exception(Exception(err))
                     error_conditions(root, err)
                     sys.exit(1)
@@ -204,10 +202,10 @@ def main():
         os.makedirs(os.path.join(results_directory_l_drive, f"{yr} Runs", worksheet_id))
 
     # Copy data from cluster to L: drive
-    for sample in next(os.walk(os.path.join(results_directory_cluster, run_id, "IlluminaTruSightCancer")))[1]:
+    for sample in next(os.walk(os.path.join(results_directory_cluster, results, run_id, "IlluminaTruSightCancer")))[1]:
         # Name directories
         archive_directory = os.path.join(archive_directory_cluster, run_id)
-        source_directory = os.path.join(results_directory_cluster, run_id, "IlluminaTruSightCancer", sample)
+        source_directory = os.path.join(results_directory_cluster, results, run_id, "IlluminaTruSightCancer", "post_processing", "results", "coverage")
         target_directory = os.path.join(results_directory_l_drive, f"{yr} Runs", worksheet_id, sample)
         # Make directory named after sample on L: drive
         if not os.path.exists(target_directory):
@@ -220,11 +218,11 @@ def main():
     # Copy cnv calling data from cluster to L: drive
     for c in cnv_files:
         try:
-            shutil.copy2(os.path.join(results_directory_cluster, run_id, "IlluminaTruSightCancer", f"{run_id}_{c}"),
+            shutil.copy2(os.path.join(results_directory_cluster, run_id, "IlluminaTruSightCancer", "post_processing", "results", "cnv_svs", f"{run_id}_{c}"),
                          os.path.join(results_directory_l_drive, f"{yr} Runs", worksheet_id))
         except:
             err = f"CNV results file {run_id}_{c} could not be copied from " \
-                  f"{os.path.join(results_directory_cluster, run_id, 'IlluminaTruSightCancer')}. " \
+                  f"{os.path.join(results_directory_cluster, run_id, 'IlluminaTruSightCancer', 'post_processing', 'resuts', 'cnv_svs')}. " \
                   f"Please check to see if it is there."
             logging.exception(err)
             error_conditions(root, err)
