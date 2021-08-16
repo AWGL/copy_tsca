@@ -200,29 +200,30 @@ def main():
     # Make directory named after worksheet on L:
     if not os.path.exists(os.path.join(results_directory_l_drive, f"{yr} Runs", worksheet_id)):
         os.makedirs(os.path.join(results_directory_l_drive, f"{yr} Runs", worksheet_id))
-
+    
     # Copy data from cluster to L: drive
-    for sample in next(os.walk(os.path.join(results_directory_cluster, results, run_id, "IlluminaTruSightCancer")))[1]:
-        # Name directories
-        archive_directory = os.path.join(archive_directory_cluster, run_id)
-        source_directory = os.path.join(results_directory_cluster, results, run_id, "IlluminaTruSightCancer", "post_processing", "results", "coverage")
-        target_directory = os.path.join(results_directory_l_drive, f"{yr} Runs", worksheet_id, sample)
-        # Make directory named after sample on L: drive
-        if not os.path.exists(target_directory):
-            os.makedirs(os.path.join(target_directory))
-        if sample not in ntc_names:
-            logger.info(copy_sample(root, source_directory, target_directory, run_id, sample))
-        else:
-            logger.info(copy_ntc(root, archive_directory, target_directory))
+    for sample in next(os.walk(os.path.join(results_directory_cluster, "results", run_id, "IlluminaTruSightCancer")))[1]:
+        if sample != "post_processing":
+            # Name directories
+            archive_directory = os.path.join(archive_directory_cluster, run_id)
+            source_directory = os.path.join(results_directory_cluster, "results", run_id, "IlluminaTruSightCancer", "post_processing", "results", "coverage")
+            target_directory = os.path.join(results_directory_l_drive, f"{yr} Runs", worksheet_id, sample)
+            # Make directory named after sample on L: drive
+            if not os.path.exists(target_directory):
+                os.makedirs(os.path.join(target_directory))
+            if sample not in ntc_names:
+                logger.info(copy_sample(root, source_directory, target_directory, run_id, sample))
+            else:
+                logger.info(copy_ntc(root, archive_directory, target_directory))
 
     # Copy cnv calling data from cluster to L: drive
     for c in cnv_files:
         try:
-            shutil.copy2(os.path.join(results_directory_cluster, run_id, "IlluminaTruSightCancer", "post_processing", "results", "cnv_svs", f"{run_id}_{c}"),
+            shutil.copy2(os.path.join(results_directory_cluster, "results", run_id, "IlluminaTruSightCancer", "post_processing", "results", "cnv_svs", f"{run_id}_{c}"),
                          os.path.join(results_directory_l_drive, f"{yr} Runs", worksheet_id))
         except:
             err = f"CNV results file {run_id}_{c} could not be copied from " \
-                  f"{os.path.join(results_directory_cluster, run_id, 'IlluminaTruSightCancer', 'post_processing', 'results', 'cnv_svs')}. " \
+                  f"{os.path.join(results_directory_cluster, 'results', run_id, 'IlluminaTruSightCancer', 'post_processing', 'results', 'cnv_svs')}. " \
                   f"Please check to see if it is there."
             logging.exception(err)
             error_conditions(root, err)
