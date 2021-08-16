@@ -1,0 +1,5 @@
+mean_depth,0.01
+min_depth,0.0
+max_depth,2.0
+stddev_depth,0.07
+pct_greater_20x,0.0
