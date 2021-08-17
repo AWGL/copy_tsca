@@ -1,0 +1,15 @@
+#Illumina Variables File
+
+#Demographics
+sampleId=16M09100
+
+#Run Details
+seqId=190729_NB551319_0017_AH5CFNAFXY
+platform=ILLUMINA
+worklistId="19-4838"
+
+#Sample Descriptors
+pipelineName=germline_enrichment_nextflow
+pipelineVersion=wren
+panel=IlluminaTruSightCancer
+sex=2
