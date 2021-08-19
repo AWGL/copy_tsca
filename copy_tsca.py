@@ -16,6 +16,7 @@ from config import ntc_files
 from config import sample_directories
 from config import sample_files
 from config import cnv_files
+from config import cnv_failure
 
 # Temp variables
 #run_id = "191220_NB551415_0052_AHVVJVAFXY"
@@ -224,6 +225,17 @@ def main():
         except:
             err = f"CNV results file {run_id}_{c} could not be copied from " \
                   f"{os.path.join(results_directory_cluster, 'results', run_id, 'IlluminaTruSightCancer', 'post_processing', 'results', 'cnv_svs')}. " \
+                  f"Please check to see if it is there."
+            logging.exception(err)
+            error_conditions(root, err)
+            sys.exit(1)
+    for c in cnv_failure:
+        try:
+            shutil.copy2(os.path.join(results_directory_cluster, "results", run_id, "IlluminaTruSightCancer", "post_processing", "results", "cnv_svs", "raw_data", f"{run_id}_1_{c}"),
+                         os.path.join(results_directory_l_drive, f"{yr} Runs", worksheet_id))
+        except:
+            err = f"CNV failures file {run_id}_1_{c} could not be copied from " \
+                  f"{os.path.join(results_directory_cluster, 'results', run_id, 'IlluminaTruSightCancer', 'post_processing', 'results', 'cnv_svs', 'raw_data')}. " \
                   f"Please check to see if it is there."
             logging.exception(err)
             error_conditions(root, err)
