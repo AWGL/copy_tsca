@@ -10,9 +10,6 @@ import sys
 from config import archive_directory_cluster
 from config import results_directory_cluster
 from config import results_directory_l_drive
-from config import ntc_names
-from config import ntc_directories
-from config import ntc_files
 from config import sample_directories
 from config import sample_files
 from config import cnv_files
@@ -79,36 +76,6 @@ def copy_sample(root, source_directory, target_directory, run_id, s):
                     error_conditions(root, err)
                     sys.exit(1)
     return f"Sample {s} copy successful"
-
-
-def copy_ntc(root, archive_directory, target_directory):
-    if ntc_files:
-        for f in ntc_files:
-            try:
-                shutil.copy2(os.path.join(archive_directory, f),
-                             os.path.join(target_directory))
-            except:
-                err = f"Problem with copying file {f} for NTC. Check that it is present on A:."
-                logging.exception(Exception(err))
-                error_conditions(root, err)
-                sys.exit(1)
-        for d in ntc_directories:
-            # Make directory
-            if not os.path.exists(os.path.join(target_directory, d)):
-                os.makedirs(os.path.join(target_directory, d))
-            # Copy directory files
-            for f in os.listdir((os.path.join(archive_directory, d))):
-                try:
-                    shutil.copy2(os.path.join(archive_directory, d, f),
-                                 os.path.join(target_directory, d))
-                except:
-                    err = f"Problem with copying file {f} from directory {d} for NTC. " \
-                          f"Check that it is present on T:."
-                    logging.exception(Exception(err))
-                    error_conditions(root, err)
-                    sys.exit(1)
-    return "NTC copy successful"
-
 
 def rename_dir(root, old, new):
     # Print informative error if can't find the original directory
@@ -212,10 +179,7 @@ def main():
             # Make directory named after sample on L: drive
             if not os.path.exists(target_directory):
                 os.makedirs(os.path.join(target_directory))
-            if sample not in ntc_names:
                 logger.info(copy_sample(root, source_directory, target_directory, run_id, sample))
-            else:
-                logger.info(copy_ntc(root, archive_directory, target_directory))
 
     # Copy cnv calling data from cluster to L: drive
     for c in cnv_files:
@@ -241,7 +205,7 @@ def main():
             error_conditions(root, err)
             sys.exit(1)
 
-    # Rename sample directories on L: drive with order. Do not rename NTC.
+    # Rename sample directories on L: drive with order.
     for sample, d in all_variables.items():
         # Find the number for order
         try:
@@ -258,14 +222,12 @@ def main():
             order = retrieved_order
         directory_new_name = f"{order} {sample}"
 
-        # Rename all samples except NTC
-        if sample not in ntc_names:
-            old_path = os.path.join(results_directory_l_drive, f"{yr} Runs", worksheet_id, sample)
-            new_path = os.path.join(results_directory_l_drive, f"{yr} Runs", worksheet_id, directory_new_name)
-            logger.info(rename_dir(root, old_path, new_path))
+        old_path = os.path.join(results_directory_l_drive, f"{yr} Runs", worksheet_id, sample)
+        new_path = os.path.join(results_directory_l_drive, f"{yr} Runs", worksheet_id, directory_new_name)
+        logger.info(rename_dir(root, old_path, new_path))
 
     # Check expected number of entries in log file
-    expected_num_log_entries = ((len(all_variables.keys()) - len(ntc_names)) * 2) + len(ntc_names)
+    expected_num_log_entries = len(all_variables.keys()) * 2
     with open(os.path.join(os.getcwd(), "tsca_copy.log"), 'r') as lf:
         num_log_entries = sum(1 for _ in lf)
     if num_log_entries == expected_num_log_entries:
