@@ -1,8 +1,8 @@
 import os
 
 # Paths
-archive_directory_cluster = os.path.join(os.sep, "T:", os.sep, "nextseq")
-results_directory_cluster = os.path.join(os.sep, "U:", os.sep)
+archive_directory_cluster = os.path.join(os.sep, "W:", os.sep, "wren_archive", "nextseq")
+results_directory_cluster = os.path.join(os.sep, "W:", os.sep, "wren_results")
 results_directory_l_drive = os.path.join(os.sep, "L:", os.sep, "NGS ANALYSIS", "TruSightCancer")
 
 '''TEST DIRECTORY STRUCTURE
